@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="../../../../layout/custom_preview.xml" value="0.1640625" />
+        <entry key="app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.2984375" />
+        <entry key="app/src/main/res/drawable/background_gradient.xml" value="0.2984375" />
+        <entry key="app/src/main/res/drawable/backround_gradient.xml" value="0.2984375" />
+        <entry key="app/src/main/res/drawable/bottom_nav_icon_color_selector.xml" value="0.2984375" />
+        <entry key="app/src/main/res/drawable/ic_avatar.xml" value="0.2984375" />
+        <entry key="app/src/main/res/drawable/ic_favourite_filled.xml" value="0.2984375" />
+        <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.2984375" />
+        <entry key="app/src/main/res/drawable/ic_play_arrow.xml" value="0.2984375" />
+        <entry key="app/src/main/res/drawable/ic_search.xml" value="0.2984375" />
+        <entry key="app/src/main/res/drawable/image_cover.xml" value="0.2984375" />
+        <entry key="app/src/main/res/drawable/search_bg.xml" value="0.2984375" />
+        <entry key="app/src/main/res/drawable/search_outline.xml" value="0.2984375" />
+        <entry key="app/src/main/res/drawable/spinner_bg.xml" value="0.2984375" />
+        <entry key="app/src/main/res/font/ironclad.xml" value="0.3125" />
+        <entry key="app/src/main/res/layout-v23/activity_movie_details.xml" value="0.28229166666666666" />
+        <entry key="app/src/main/res/layout/activity_cast.xml" value="0.2533681077983189" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/activity_movie_details.xml" value="0.3014455873105176" />
+        <entry key="app/src/main/res/layout/activity_movie_stream.xml" value="0.28229166666666666" />
+        <entry key="app/src/main/res/layout/activity_search_results.xml" value="0.28229166666666666" />
+        <entry key="app/src/main/res/layout/activity_series_details.xml" value="0.28229166666666666" />
+        <entry key="app/src/main/res/layout/activity_series_stream.xml" value="0.2749094202898551" />
+        <entry key="app/src/main/res/layout/activity_view_all_movies.xml" value="0.28229166666666666" />
+        <entry key="app/src/main/res/layout/activity_view_all_series.xml" value="0.28229166666666666" />
+        <entry key="app/src/main/res/layout/activity_youtube.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/carousel_single_item.xml" value="0.45" />
+        <entry key="app/src/main/res/layout/cast_single_item.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/casts_movie_single_item.xml" value="0.28229166666666666" />
+        <entry key="app/src/main/res/layout/casts_tv_single_item.xml" value="0.28229166666666666" />
+        <entry key="app/src/main/res/layout/fragment_favourite_movie.xml" value="0.28229166666666666" />
+        <entry key="app/src/main/res/layout/fragment_favourite_tv_shows.xml" value="0.28229166666666666" />
+        <entry key="app/src/main/res/layout/fragment_favourites.xml" value="0.17617753623188406" />
+        <entry key="app/src/main/res/layout/fragment_movie.xml" value="0.28229166666666666" />
+        <entry key="app/src/main/res/layout/fragment_search.xml" value="0.2600223684156332" />
+        <entry key="app/src/main/res/layout/fragment_series.xml" value="0.28229166666666666" />
+        <entry key="app/src/main/res/layout/item_episode.xml" value="0.4382711050817163" />
+        <entry key="app/src/main/res/layout/item_recents.xml" value="0.1311379559297466" />
+        <entry key="app/src/main/res/layout/item_search_result.xml" value="0.2749094202898551" />
+        <entry key="app/src/main/res/layout/item_video.xml" value="0.28229166666666666" />
+        <entry key="app/src/main/res/layout/small_single_item.xml" value="0.17617753623188406" />
+        <entry key="app/src/main/res/menu/bottom_navigation.xml" value="0.28229166666666666" />
+        <entry key="app/src/main/res/menu/top_app_bar.xml" value="0.28229166666666666" />
+        <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.2984375" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>

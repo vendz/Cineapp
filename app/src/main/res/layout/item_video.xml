@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/trailer_cardView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:elevation="100dp"
+        android:foreground="?android:attr/selectableItemBackground"
+        app:cardCornerRadius="4dp">
+
+        <ImageView
+            android:id="@+id/trailer_imageView"
+            android:layout_width="240dp"
+            android:layout_height="135dp"
+            android:background="@android:color/darker_gray" />
+
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/trailer_textView"
+        android:layout_width="240dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:maxLines="2"
+        android:textAlignment="center" />
+
+</LinearLayout>
