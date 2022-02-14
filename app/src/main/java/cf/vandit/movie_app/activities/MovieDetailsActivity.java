@@ -35,8 +35,8 @@ import java.util.List;
 import cf.vandit.movie_app.R;
 import cf.vandit.movie_app.adapters.MovieBriefSmallAdapter;
 import cf.vandit.movie_app.adapters.MovieCastsAdapter;
-import cf.vandit.movie_app.database.DatabaseClient;
-import cf.vandit.movie_app.database.FavMovie;
+import cf.vandit.movie_app.database.movies.FavMovie;
+import cf.vandit.movie_app.database.movies.MovieDatabase;
 import cf.vandit.movie_app.network.movie.SimilarMoviesResponse;
 import cf.vandit.movie_app.adapters.TrailerAdapter;
 import cf.vandit.movie_app.network.movie.Genre;
@@ -234,7 +234,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
     }
 
     private void setFavourite(final Integer movieId, final String posterPath, final String movieTitle, final FavMovie mFavMovie) {
-        if (Favourite.isMovieFav(MovieDetailsActivity.this, movieId)) {
+        if (Favourite.isFavMovie(MovieDetailsActivity.this, movieId)) {
             movie_favourite_btn.setTag(Constants.TAG_FAV);
             movie_favourite_btn.setImageResource(R.drawable.ic_favourite_filled);
             movie_favourite_btn.setColorFilter(Color.argb(1, 236, 116, 85));
@@ -251,12 +251,9 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
                     @Override
                     protected Void doInBackground(Void... voids) {
-                        FavMovie favMovie = new FavMovie();
-                        favMovie.setMovie_id(movieId);
-                        favMovie.setName(movieTitle);
-                        favMovie.setPoster_path(posterPath);
-                        DatabaseClient.getInstance(getApplicationContext()).getAppDatabase()
-                                .favouriteDao()
+                        FavMovie favMovie = new FavMovie(movieId, movieTitle, posterPath);
+                        MovieDatabase.getInstance(getApplicationContext())
+                                .movieDao()
                                 .insertMovie(favMovie);
 
                         return null;
@@ -267,27 +264,26 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
                     @Override
                     protected Void doInBackground(Void... voids) {
-                        DatabaseClient.getInstance(getApplicationContext()).getAppDatabase()
-                                .favouriteDao()
-                                .deleteMovie(mFavMovie);
+                        MovieDatabase.getInstance(getApplicationContext())
+                                .movieDao()
+                                .deleteMovieById(movieId);
+
                         return null;
                     }
                 }
 
                 view.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
                 if ((int) movie_favourite_btn.getTag() == Constants.TAG_FAV) {
-                    Favourite.removeMovieFromFav(MovieDetailsActivity.this, movieId);
                     movie_favourite_btn.setTag(Constants.TAG_NOT_FAV);
                     movie_favourite_btn.setImageResource(R.drawable.ic_favourite_outlined);
-//                    DeleteMovie deleteMovie = new DeleteMovie();
-//                    deleteMovie.execute();
+                    DeleteMovie deleteMovie = new DeleteMovie();
+                    deleteMovie.execute();
                 } else {
-                    Favourite.addMovieToFav(MovieDetailsActivity.this, movieId, posterPath, movieTitle);
                     movie_favourite_btn.setTag(Constants.TAG_FAV);
                     movie_favourite_btn.setImageResource(R.drawable.ic_favourite_filled);
                     movie_favourite_btn.setColorFilter(Color.argb(1, 236, 116, 85));
-//                    SaveMovie saveMovie = new SaveMovie();
-//                    saveMovie.execute();
+                    SaveMovie saveMovie = new SaveMovie();
+                    saveMovie.execute();
                 }
             }
         });

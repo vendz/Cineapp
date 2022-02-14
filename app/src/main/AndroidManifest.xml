@@ -20,24 +20,28 @@
         android:theme="@style/Theme.Movieapp">
         <activity
             android:name=".activities.SearchResultsActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".activities.SeriesStreamActivity"
             android:exported="false"
             android:screenOrientation="sensorLandscape" />
         <activity
             android:name=".activities.ViewAllSeriesActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".activities.SeriesDetailsActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activities.ViewAllMoviesActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".activities.CastActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".activities.YoutubeActivity"
             android:exported="false" />

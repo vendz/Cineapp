@@ -1,5 +1,6 @@
 package cf.vandit.movie_app.fragments;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -18,17 +19,13 @@ import java.util.List;
 
 import cf.vandit.movie_app.R;
 import cf.vandit.movie_app.adapters.FavMoviesAdapter;
-import cf.vandit.movie_app.adapters.MovieBriefSmallAdapter;
-import cf.vandit.movie_app.network.movie.MovieBrief;
-import cf.vandit.movie_app.database.Favourite;
+import cf.vandit.movie_app.database.movies.FavMovie;
+import cf.vandit.movie_app.database.movies.MovieDatabase;
 
 public class FavouriteMoviesFragment extends Fragment {
 
     private RecyclerView mFavMoviesRecyclerView;
-    private List<MovieBrief> mFavMovies;
-    private MovieBriefSmallAdapter mFavMoviesAdapter;
-
-    private FavMoviesAdapter favMoviesAdapter;
+    private List<FavMovie> mFavMovies;
 
     private LinearLayout mEmptyLayout;
 
@@ -47,54 +44,45 @@ public class FavouriteMoviesFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mFavMoviesRecyclerView = (RecyclerView) view.findViewById(R.id.fav_movies_recycler_view);
+        mFavMoviesRecyclerView = view.findViewById(R.id.fav_movies_recycler_view);
         mFavMovies = new ArrayList<>();
-        mFavMoviesAdapter = new MovieBriefSmallAdapter(mFavMovies, getContext());
-        mFavMoviesRecyclerView.setAdapter(mFavMoviesAdapter);
-        mFavMoviesRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
 
-        mEmptyLayout = (LinearLayout) view.findViewById(R.id.fav_movies_linear_layout);
+        mEmptyLayout = view.findViewById(R.id.fav_movies_linear_layout);
 
-        loadFavMovies();
+        GetFavMovies getFavMovies = new GetFavMovies();
+        getFavMovies.execute();
+    }
+
+    class GetFavMovies extends AsyncTask<Void, Void, List<FavMovie>> {
+        @Override
+        protected List<FavMovie> doInBackground(Void... voids) {
+            mFavMovies.clear();
+
+            mFavMovies = MovieDatabase.getInstance(getContext())
+                    .movieDao()
+                    .getAllFavMovies();
+
+            return mFavMovies;
+        }
+
+        @Override
+        protected void onPostExecute(List<FavMovie> favMovies) {
+            super.onPostExecute(favMovies);
+
+            FavMoviesAdapter mFavMoviesAdapter = new FavMoviesAdapter(favMovies, getContext());
+            mFavMoviesRecyclerView.setAdapter(mFavMoviesAdapter);
+            mFavMoviesRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
+
+            if (mFavMovies.isEmpty()){
+                mEmptyLayout.setVisibility(View.VISIBLE);
+            }
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
 //        GetFavMovies getFavMovies = new GetFavMovies();
 //        getFavMovies.execute();
     }
-
-    private void loadFavMovies(){
-        List<MovieBrief> favMovieBriefs = Favourite.getFavMovieBriefs(getContext());
-        if (favMovieBriefs.isEmpty()) {
-            mEmptyLayout.setVisibility(View.VISIBLE);
-            return;
-        }
-
-        for (MovieBrief movieBrief : favMovieBriefs) {
-            mFavMovies.add(movieBrief);
-        }
-        mFavMoviesAdapter.notifyDataSetChanged();
-    }
-
-//    class GetFavMovies extends AsyncTask<Void, Void, List<FavMovie>> {
-//        @Override
-//        protected List<FavMovie> doInBackground(Void... voids) {
-//            List<FavMovie> mFavMovie = DatabaseClient.getInstance(getContext())
-//                    .getAppDatabase()
-//                    .favouriteDao()
-//                    .getAll();
-//
-//            return mFavMovie;
-//        }
-//
-//        @Override
-//        protected void onPostExecute(List<FavMovie> favMovies) {
-//            super.onPostExecute(favMovies);
-//
-//            favMoviesAdapter = new FavMoviesAdapter(favMovies, getContext());
-//            mFavMoviesRecyclerView.setAdapter(favMoviesAdapter);
-//            mFavMoviesRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
-//
-//            if (favMovies.isEmpty()){
-//                mEmptyLayout.setVisibility(View.VISIBLE);
-//            }
-//        }
-//    }
 }

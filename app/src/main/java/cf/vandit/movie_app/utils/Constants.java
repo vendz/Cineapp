@@ -1,8 +1,8 @@
 package cf.vandit.movie_app.utils;
 
 public class Constants {
-    public static final String API_KEY = "YOUR-API-KEY";
-    public static final String YOUTUBE_API_KEY = "YOUR-API-KEY";
+    public static final String API_KEY = "TMDB-API-KEY";
+    public static final String YOUTUBE_API_KEY = "YOUTUBE-API-KEY";
     public static final String BASE_URL = "https://api.themoviedb.org/3/";
     public static final String MOVIE_STREAM_URL = "CANNOT-BE-DISCLOSED";
     public static final String SERIES_STREAM_URL = "CANNOT-BE-DISCLOSED";

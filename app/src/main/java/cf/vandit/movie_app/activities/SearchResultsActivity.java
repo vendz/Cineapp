@@ -11,6 +11,7 @@ import android.content.Loader;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -30,6 +31,7 @@ public class SearchResultsActivity extends AppCompatActivity {
     private List<SearchResult> mSearchResults;
     private SearchResultsAdapter mSearchResultsAdapter;
 
+    private ProgressBar progressBar;
     private TextView mEmptyTextView;
 
     private boolean pagesOver = false;
@@ -53,6 +55,7 @@ public class SearchResultsActivity extends AppCompatActivity {
         setTitle(mQuery.trim());
 
         mEmptyTextView = findViewById(R.id.text_view_empty_search);
+        progressBar = findViewById(R.id.search_progressBar);
 
         mSearchResultsRecyclerView = findViewById(R.id.recycler_view_search);
         mSearchResults = new ArrayList<>();
@@ -98,6 +101,7 @@ public class SearchResultsActivity extends AppCompatActivity {
             @Override
             public void onLoadFinished(Loader<SearchResponse> loader, SearchResponse searchResponse) {
 
+                progressBar.setVisibility(View.GONE);
                 if (searchResponse == null) return;
                 if (searchResponse.getResults() == null) return;
 

@@ -3,6 +3,7 @@ package cf.vandit.movie_app.activities;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.HapticFeedbackConstants;
 import android.view.View;
@@ -39,6 +40,10 @@ import cf.vandit.movie_app.adapters.EpisodesAdapter;
 import cf.vandit.movie_app.adapters.SeriesBriefSmallAdapter;
 import cf.vandit.movie_app.adapters.SeriesCastsAdapter;
 import cf.vandit.movie_app.adapters.TrailerAdapter;
+import cf.vandit.movie_app.database.movies.FavMovie;
+import cf.vandit.movie_app.database.movies.MovieDatabase;
+import cf.vandit.movie_app.database.series.FavSeries;
+import cf.vandit.movie_app.database.series.SeriesDatabase;
 import cf.vandit.movie_app.network.series.EpisodeBrief;
 import cf.vandit.movie_app.network.series.Genre;
 import cf.vandit.movie_app.network.series.SeasonDetailsResponse;
@@ -251,7 +256,7 @@ public class SeriesDetailsActivity extends AppCompatActivity {
     }
 
     private void setFavourite(final Integer SeriesId, final String posterPath, final String seriesTitle) {
-        if (Favourite.isTVShowFav(SeriesDetailsActivity.this, SeriesId)) {
+        if (Favourite.isFavSeries(SeriesDetailsActivity.this, SeriesId)) {
             series_favourite_btn.setTag(Constants.TAG_FAV);
             series_favourite_btn.setImageResource(R.drawable.ic_favourite_filled);
             series_favourite_btn.setColorFilter(Color.argb(1, 236, 116, 85));
@@ -260,20 +265,45 @@ public class SeriesDetailsActivity extends AppCompatActivity {
             series_favourite_btn.setImageResource(R.drawable.ic_favourite_outlined);
         }
 
-        series_favourite_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                view.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
-                if ((int) series_favourite_btn.getTag() == Constants.TAG_FAV) {
-                    Favourite.removeTVShowFromFav(SeriesDetailsActivity.this, SeriesId);
-                    series_favourite_btn.setTag(Constants.TAG_NOT_FAV);
-                    series_favourite_btn.setImageResource(R.drawable.ic_favourite_outlined);
-                } else {
-                    Favourite.addTVShowToFav(SeriesDetailsActivity.this, SeriesId, posterPath, seriesTitle);
-                    series_favourite_btn.setTag(Constants.TAG_FAV);
-                    series_favourite_btn.setImageResource(R.drawable.ic_favourite_filled);
-                    series_favourite_btn.setColorFilter(Color.argb(1, 236, 116, 85));
+        series_favourite_btn.setOnClickListener(view -> {
+
+            class SaveSeries extends AsyncTask<Void, Void, Void> {
+
+                @Override
+                protected Void doInBackground(Void... voids) {
+                    FavSeries favSeries = new FavSeries(SeriesId, posterPath, seriesTitle);
+                    SeriesDatabase.getInstance(getApplicationContext())
+                            .seriesDao()
+                            .insertSeries(favSeries);
+
+                    return null;
                 }
+            }
+
+            class DeleteSeries extends AsyncTask<Void, Void, Void>{
+
+                @Override
+                protected Void doInBackground(Void... voids) {
+                    SeriesDatabase.getInstance(getApplicationContext())
+                            .seriesDao()
+                            .deleteSeriesById(SeriesId);
+
+                    return null;
+                }
+            }
+
+            view.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
+            if ((int) series_favourite_btn.getTag() == Constants.TAG_FAV) {
+                series_favourite_btn.setTag(Constants.TAG_NOT_FAV);
+                series_favourite_btn.setImageResource(R.drawable.ic_favourite_outlined);
+                DeleteSeries deleteSeries = new DeleteSeries();
+                deleteSeries.execute();
+            } else {
+                series_favourite_btn.setTag(Constants.TAG_FAV);
+                series_favourite_btn.setImageResource(R.drawable.ic_favourite_filled);
+                series_favourite_btn.setColorFilter(Color.argb(1, 236, 116, 85));
+                SaveSeries saveSeries = new SaveSeries();
+                saveSeries.execute();
             }
         });
     }

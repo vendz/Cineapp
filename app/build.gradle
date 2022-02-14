@@ -6,7 +6,7 @@ android {
     compileSdk 31
 
     defaultConfig {
-        applicationId "cf.vandit.movie_app"
+        applicationId "cf.vandit.cineapp"
         minSdk 21
         targetSdk 31
         versionCode 1
@@ -29,11 +29,11 @@ android {
 
 dependencies {
 
-    implementation 'androidx.appcompat:appcompat:1.4.0'
-    implementation 'com.google.android.material:material:1.4.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.2'
-    implementation 'androidx.navigation:navigation-fragment:2.3.5'
-    implementation 'androidx.navigation:navigation-ui:2.3.5'
+    implementation 'androidx.appcompat:appcompat:1.4.1'
+    implementation 'com.google.android.material:material:1.5.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
+    implementation 'androidx.navigation:navigation-fragment:2.4.1'
+    implementation 'androidx.navigation:navigation-ui:2.4.1'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation files('libs/YouTubeAndroidPlayerApi.jar')
     testImplementation 'junit:junit:4.+'
@@ -47,9 +47,6 @@ dependencies {
     // Glide
     implementation 'com.github.bumptech.glide:glide:4.12.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
-
-    // Youtube Player
-//    implementation 'com.pierfrancescosoffritti.androidyoutubeplayer:core:10.0.5'
 
     // smart tab layout
     implementation 'com.ogaclejapan.smarttablayout:library:1.6.1@aar'

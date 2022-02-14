@@ -18,41 +18,41 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import java.util.List;
 
 import cf.vandit.movie_app.R;
-import cf.vandit.movie_app.activities.MovieDetailsActivity;
-import cf.vandit.movie_app.database.movies.FavMovie;
+import cf.vandit.movie_app.activities.SeriesDetailsActivity;
+import cf.vandit.movie_app.database.series.FavSeries;
 import cf.vandit.movie_app.utils.Constants;
 
-public class FavMoviesAdapter extends RecyclerView.Adapter<FavMoviesAdapter.ViewHolder> {
-    private List<FavMovie> mMovies;
+public class FavSeriesAdapter extends RecyclerView.Adapter<FavSeriesAdapter.ViewHolder> {
+    private List<FavSeries> mSeries;
     private Context mContext;
 
-    public FavMoviesAdapter(List<FavMovie> mMovies, Context mContext) {
-        this.mMovies = mMovies;
+    public FavSeriesAdapter(List<FavSeries> mSeries, Context mContext) {
+        this.mSeries = mSeries;
         this.mContext = mContext;
     }
 
     @NonNull
     @Override
-    public FavMoviesAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new FavMoviesAdapter.ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.small_single_item, parent, false));
+    public FavSeriesAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new FavSeriesAdapter.ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.small_single_item, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(@NonNull FavMoviesAdapter.ViewHolder holder, int position) {
-        Glide.with(mContext.getApplicationContext()).load(Constants.IMAGE_LOADING_BASE_URL_342 + mMovies.get(position).getPoster_path())
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        Glide.with(mContext.getApplicationContext()).load(Constants.IMAGE_LOADING_BASE_URL_342 + mSeries.get(position).getSeries_poster_path())
                 .centerCrop()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(holder.movie_imageView);
 
-        if (mMovies.get(position).getName() != null)
-            holder.movie_title.setText(mMovies.get(position).getName());
+        if (mSeries.get(position).getSeries_name() != null)
+            holder.movie_title.setText(mSeries.get(position).getSeries_name());
         else
             holder.movie_title.setText("");
     }
 
     @Override
     public int getItemCount() {
-        return mMovies.size();
+        return mSeries.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -71,13 +71,10 @@ public class FavMoviesAdapter extends RecyclerView.Adapter<FavMoviesAdapter.View
             movie_imageView.getLayoutParams().width = (int) (mContext.getResources().getDisplayMetrics().widthPixels * 0.31);
             movie_imageView.getLayoutParams().height = (int) ((mContext.getResources().getDisplayMetrics().widthPixels * 0.31) / 0.66);
 
-            movie_cardView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(mContext, MovieDetailsActivity.class);
-                    intent.putExtra("movie_id", mMovies.get(getAdapterPosition()).getMovie_id());
-                    mContext.startActivity(intent);
-                }
+            movie_cardView.setOnClickListener(view -> {
+                Intent intent = new Intent(mContext, SeriesDetailsActivity.class);
+                intent.putExtra("series_id", mSeries.get(getAdapterPosition()).getSeries_tmdb_id());
+                mContext.startActivity(intent);
             });
         }
     }

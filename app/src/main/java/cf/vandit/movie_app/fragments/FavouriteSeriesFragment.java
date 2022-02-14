@@ -1,6 +1,11 @@
 package cf.vandit.movie_app.fragments;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -8,24 +13,19 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import cf.vandit.movie_app.R;
-import cf.vandit.movie_app.adapters.SeriesBriefSmallAdapter;
-import cf.vandit.movie_app.network.series.SeriesBrief;
-import cf.vandit.movie_app.database.Favourite;
+import cf.vandit.movie_app.adapters.FavMoviesAdapter;
+import cf.vandit.movie_app.adapters.FavSeriesAdapter;
+import cf.vandit.movie_app.database.series.FavSeries;
+import cf.vandit.movie_app.database.series.SeriesDatabase;
 
 public class FavouriteSeriesFragment extends Fragment {
 
-    private RecyclerView mFavTVShowsRecyclerView;
-    private List<SeriesBrief> mFavTVShows;
-    private SeriesBriefSmallAdapter mFavTVShowsAdapter;
+    private RecyclerView mFavSeriesRecyclerView;
+    private List<FavSeries> mFavSeries;
 
     private LinearLayout mEmptyLayout;
 
@@ -44,27 +44,45 @@ public class FavouriteSeriesFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mFavTVShowsRecyclerView = (RecyclerView) view.findViewById(R.id.fav_tv_shows_recycler_view);
-        mFavTVShows = new ArrayList<>();
-        mFavTVShowsAdapter = new SeriesBriefSmallAdapter(mFavTVShows, getContext());
-        mFavTVShowsRecyclerView.setAdapter(mFavTVShowsAdapter);
-        mFavTVShowsRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
+        mFavSeriesRecyclerView = view.findViewById(R.id.fav_tv_shows_recycler_view);
+        mFavSeries = new ArrayList<>();
 
-        mEmptyLayout = (LinearLayout) view.findViewById(R.id.fav_tv_shows_linear_layout);
+        mEmptyLayout = view.findViewById(R.id.fav_tv_shows_linear_layout);
 
-        loadTvShows();
+        GetFavSeries getFavSeries = new GetFavSeries();
+        getFavSeries.execute();
     }
 
-    private void loadTvShows(){
-        List<SeriesBrief> favSeriesBriefs = Favourite.getFavTVShowBriefs(getContext());
-        if (favSeriesBriefs.isEmpty()) {
-            mEmptyLayout.setVisibility(View.VISIBLE);
-            return;
+    class GetFavSeries extends AsyncTask<Void, Void, List<FavSeries>> {
+        @Override
+        protected List<FavSeries> doInBackground(Void... voids) {
+            mFavSeries.clear();
+
+            mFavSeries = SeriesDatabase.getInstance(getContext())
+                    .seriesDao()
+                    .getAllFavSeries();
+
+            return mFavSeries;
         }
 
-        for (SeriesBrief seriesBrief : favSeriesBriefs) {
-            mFavTVShows.add(seriesBrief);
+        @Override
+        protected void onPostExecute(List<FavSeries> favSeries) {
+            super.onPostExecute(favSeries);
+
+            FavSeriesAdapter mFavSeriesAdapter = new FavSeriesAdapter(favSeries, getContext());
+            mFavSeriesRecyclerView.setAdapter(mFavSeriesAdapter);
+            mFavSeriesRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
+
+            if (mFavSeries.isEmpty()){
+                mEmptyLayout.setVisibility(View.VISIBLE);
+            }
         }
-        mFavTVShowsAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+//        GetFavSeries getFavSeries = new GetFavSeries();
+//        getFavSeries.execute();
     }
 }

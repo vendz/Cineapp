@@ -47,4 +47,12 @@
         android:textAlignment="center"
         android:visibility="gone" />
 
+    <ProgressBar
+        android:id="@+id/search_progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:indeterminateTint="@color/orange"
+        android:visibility="visible"/>
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
