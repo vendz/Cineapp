@@ -1,6 +1,5 @@
 package cf.vandit.movie_app.fragments;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,14 +9,14 @@ import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import cf.vandit.movie_app.R;
-import cf.vandit.movie_app.adapters.FavMoviesAdapter;
 import cf.vandit.movie_app.adapters.FavSeriesAdapter;
 import cf.vandit.movie_app.database.series.FavSeries;
 import cf.vandit.movie_app.database.series.SeriesDatabase;
@@ -25,8 +24,6 @@ import cf.vandit.movie_app.database.series.SeriesDatabase;
 public class FavouriteSeriesFragment extends Fragment {
 
     private RecyclerView mFavSeriesRecyclerView;
-    private List<FavSeries> mFavSeries;
-
     private LinearLayout mEmptyLayout;
 
     public FavouriteSeriesFragment() {
@@ -45,44 +42,23 @@ public class FavouriteSeriesFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         mFavSeriesRecyclerView = view.findViewById(R.id.fav_tv_shows_recycler_view);
-        mFavSeries = new ArrayList<>();
-
         mEmptyLayout = view.findViewById(R.id.fav_tv_shows_linear_layout);
 
-        GetFavSeries getFavSeries = new GetFavSeries();
-        getFavSeries.execute();
-    }
+        final LiveData<List<FavSeries>> mFavSeries = SeriesDatabase.getInstance(getContext())
+                .seriesDao()
+                .getAllFavSeries();
 
-    class GetFavSeries extends AsyncTask<Void, Void, List<FavSeries>> {
-        @Override
-        protected List<FavSeries> doInBackground(Void... voids) {
-            mFavSeries.clear();
+        mFavSeries.observe(requireActivity(), new Observer<List<FavSeries>>() {
+            @Override
+            public void onChanged(List<FavSeries> favSeries) {
+                FavSeriesAdapter mFavSeriesAdapter = new FavSeriesAdapter(favSeries, getContext());
+                mFavSeriesRecyclerView.setAdapter(mFavSeriesAdapter);
+                mFavSeriesRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
 
-            mFavSeries = SeriesDatabase.getInstance(getContext())
-                    .seriesDao()
-                    .getAllFavSeries();
-
-            return mFavSeries;
-        }
-
-        @Override
-        protected void onPostExecute(List<FavSeries> favSeries) {
-            super.onPostExecute(favSeries);
-
-            FavSeriesAdapter mFavSeriesAdapter = new FavSeriesAdapter(favSeries, getContext());
-            mFavSeriesRecyclerView.setAdapter(mFavSeriesAdapter);
-            mFavSeriesRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
-
-            if (mFavSeries.isEmpty()){
-                mEmptyLayout.setVisibility(View.VISIBLE);
+                if(favSeries.isEmpty()){
+                    mEmptyLayout.setVisibility(View.VISIBLE);
+                }
             }
-        }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-//        GetFavSeries getFavSeries = new GetFavSeries();
-//        getFavSeries.execute();
+        });
     }
 }

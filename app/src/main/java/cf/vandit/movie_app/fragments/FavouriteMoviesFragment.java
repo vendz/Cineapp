@@ -1,20 +1,19 @@
 package cf.vandit.movie_app.fragments;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-import java.util.ArrayList;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.List;
 
 import cf.vandit.movie_app.R;
@@ -25,7 +24,6 @@ import cf.vandit.movie_app.database.movies.MovieDatabase;
 public class FavouriteMoviesFragment extends Fragment {
 
     private RecyclerView mFavMoviesRecyclerView;
-    private List<FavMovie> mFavMovies;
 
     private LinearLayout mEmptyLayout;
 
@@ -45,44 +43,22 @@ public class FavouriteMoviesFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         mFavMoviesRecyclerView = view.findViewById(R.id.fav_movies_recycler_view);
-        mFavMovies = new ArrayList<>();
-
         mEmptyLayout = view.findViewById(R.id.fav_movies_linear_layout);
 
-        GetFavMovies getFavMovies = new GetFavMovies();
-        getFavMovies.execute();
-    }
+        final LiveData<List<FavMovie>> mFavMovies = MovieDatabase.getInstance(getContext())
+                .movieDao()
+                .getAllFavMovies();
+        mFavMovies.observe(requireActivity(), new Observer<List<FavMovie>>() {
+            @Override
+            public void onChanged(List<FavMovie> favMovies) {
+                FavMoviesAdapter mFavMoviesAdapter = new FavMoviesAdapter(favMovies, getContext());
+                mFavMoviesRecyclerView.setAdapter(mFavMoviesAdapter);
+                mFavMoviesRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
 
-    class GetFavMovies extends AsyncTask<Void, Void, List<FavMovie>> {
-        @Override
-        protected List<FavMovie> doInBackground(Void... voids) {
-            mFavMovies.clear();
-
-            mFavMovies = MovieDatabase.getInstance(getContext())
-                    .movieDao()
-                    .getAllFavMovies();
-
-            return mFavMovies;
-        }
-
-        @Override
-        protected void onPostExecute(List<FavMovie> favMovies) {
-            super.onPostExecute(favMovies);
-
-            FavMoviesAdapter mFavMoviesAdapter = new FavMoviesAdapter(favMovies, getContext());
-            mFavMoviesRecyclerView.setAdapter(mFavMoviesAdapter);
-            mFavMoviesRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
-
-            if (mFavMovies.isEmpty()){
-                mEmptyLayout.setVisibility(View.VISIBLE);
+                if(favMovies.isEmpty()){
+                    mEmptyLayout.setVisibility(View.VISIBLE);
+                }
             }
-        }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-//        GetFavMovies getFavMovies = new GetFavMovies();
-//        getFavMovies.execute();
+        });
     }
 }

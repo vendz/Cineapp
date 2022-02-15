@@ -2,6 +2,7 @@ package cf.vandit.movie_app.database.series;
 
 import static androidx.room.OnConflictStrategy.REPLACE;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -13,7 +14,7 @@ import java.util.List;
 public interface SeriesDao {
 
     @Query("SELECT * FROM favSeries")
-    List<FavSeries> getAllFavSeries();
+    LiveData<List<FavSeries>> getAllFavSeries();
 
     @Query("SELECT * FROM favSeries WHERE series_tmdb_id = :id")
     FavSeries getSeriesById(int id);
