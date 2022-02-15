@@ -45,11 +45,6 @@ public class YoutubeActivity extends YouTubeBaseActivity {
 
         youTubePlayerView.initialize(Constants.YOUTUBE_API_KEY, onInitializedListener);
 
-        youtube_close.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onBackPressed();
-            }
-        });
+        youtube_close.setOnClickListener(view -> onBackPressed());
     }
 }

@@ -51,9 +51,6 @@ public class SearchFragment extends Fragment {
                 Intent intent = new Intent(getActivity(), SearchResultsActivity.class);
                 intent.putExtra("query", searchView.getText().toString());
                 startActivity(intent);
-
-//                Favourite.insertQuery(getActivity(), searchView.getText().toString());
-//                System.out.println(Favourite.getQueries(getActivity()));
             }
         });
     }
