@@ -2,6 +2,7 @@ package cf.vandit.movie_app.network.search;
 
 import android.content.AsyncTaskLoader;
 import android.content.Context;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -35,6 +36,9 @@ public class SearchAsyncTaskLoader extends AsyncTaskLoader<SearchResponse> {
     public SearchResponse loadInBackground() {
 
         try {
+            mQuery = mQuery.trim();
+            mQuery = mQuery.replace(" ", "+");
+
             String urlString = "https://api.themoviedb.org/3/" + "search/multi"
                     + "?"
                     + "api_key=" + Constants.API_KEY
@@ -82,7 +86,11 @@ public class SearchAsyncTaskLoader extends AsyncTaskLoader<SearchResponse> {
                         searchResult.setName(result.getString("name"));
                         searchResult.setMediaType("tv");
                         searchResult.setOverview(result.getString("overview"));
-                        searchResult.setReleaseDate(result.getString("first_air_date"));
+                        try {
+                            searchResult.setReleaseDate(result.getString("first_air_date"));
+                        } catch (Exception e){
+                            searchResult.setReleaseDate("N/A");
+                        }
                         break;
                     case "person":
                         searchResult.setId(result.getInt("id"));

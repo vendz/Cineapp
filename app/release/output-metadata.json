@@ -4,7 +4,7 @@
     "type": "APK",
     "kind": "Directory"
   },
-  "applicationId": "cf.vandit.movie_app",
+  "applicationId": "cf.vandit.cineapp",
   "variantName": "release",
   "elements": [
     {
