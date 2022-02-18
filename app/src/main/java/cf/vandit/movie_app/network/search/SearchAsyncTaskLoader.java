@@ -78,7 +78,11 @@ public class SearchAsyncTaskLoader extends AsyncTaskLoader<SearchResponse> {
                         searchResult.setName(result.getString("title"));
                         searchResult.setMediaType("movie");
                         searchResult.setOverview(result.getString("overview"));
-                        searchResult.setReleaseDate(result.getString("release_date"));
+                        try {
+                            searchResult.setReleaseDate(result.getString("release_date"));
+                        } catch (Exception e){
+                            searchResult.setReleaseDate("N/A");
+                        }
                         break;
                     case "tv":
                         searchResult.setId(result.getInt("id"));
