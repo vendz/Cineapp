@@ -13,7 +13,7 @@
 # Implementations
 <ul>
 <li>The Movie Database (TMDb)</li>
-<li>SQLite Database</li>
+<li>Room Database</li>
 <li>Retrofit - for networking</li>
 <li>Glide - for images</li>
 </ul>
@@ -55,3 +55,5 @@ public class Constants {
 }
 
 ```
+
+**Download the APK from [releases tab](https://github.com/vendz/Cineapp/releases)**
