@@ -1,24 +1,19 @@
 package cf.vandit.movie_app.activities;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.MenuItem;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.MenuItem;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import cf.vandit.movie_app.R;
-import cf.vandit.movie_app.adapters.MovieBriefSmallAdapter;
 import cf.vandit.movie_app.adapters.SeriesBriefSmallAdapter;
-import cf.vandit.movie_app.network.movie.MovieBrief;
-import cf.vandit.movie_app.network.movie.PopularMoviesResponse;
-import cf.vandit.movie_app.network.movie.TopRatedMoviesResponse;
-import cf.vandit.movie_app.network.series.AiringTodaySeriesResponse;
 import cf.vandit.movie_app.network.series.OnTheAirSeriesResponse;
 import cf.vandit.movie_app.network.series.PopularSeriesResponse;
 import cf.vandit.movie_app.network.series.SeriesBrief;
