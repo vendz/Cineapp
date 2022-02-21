@@ -19,12 +19,13 @@ import androidx.recyclerview.widget.SnapHelper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import cf.vandit.movie_app.R;
-import cf.vandit.movie_app.activities.ViewAllMoviesActivity;
 import cf.vandit.movie_app.activities.ViewAllSeriesActivity;
-import cf.vandit.movie_app.adapters.SeriesCarouselAdapter;
 import cf.vandit.movie_app.adapters.SeriesBriefSmallAdapter;
+import cf.vandit.movie_app.adapters.SeriesCarouselAdapter;
 import cf.vandit.movie_app.network.series.AiringTodaySeriesResponse;
 import cf.vandit.movie_app.network.series.OnTheAirSeriesResponse;
 import cf.vandit.movie_app.network.series.PopularSeriesResponse;
@@ -44,6 +45,11 @@ public class SeriesFragment extends Fragment {
     private TextView mViewOnTheAir;
     private TextView mViewPopular;
     private TextView mViewTopRated;
+
+    private Timer timer;
+    private TimerTask timerTask;
+    private int position;
+    private LinearLayoutManager carouselLayoutManager;
 
     private RecyclerView mAiringTodayRecyclerView;
     private List<SeriesBrief> mAiringTodaySeries;
@@ -91,7 +97,6 @@ public class SeriesFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         mProgressBar = view.findViewById(R.id.tv_progressBar);
-        mProgressBar.setVisibility(View.GONE);
         mAiringTodaySectionLoaded = false;
         mOnTheAirSectionLoaded = false;
         mPopularSectionLoaded = false;
@@ -106,8 +111,6 @@ public class SeriesFragment extends Fragment {
         mViewTopRated = view.findViewById(R.id.view_top_rated_tv);
 
         mAiringTodayRecyclerView = view.findViewById(R.id.carousel_tv_recView);
-        SnapHelper snapHelper = new PagerSnapHelper();
-        snapHelper.attachToRecyclerView(mAiringTodayRecyclerView);
         mOnTheAirRecyclerView = view.findViewById(R.id.on_the_air_recView);
         mPopularSeriesRecyclerView = view.findViewById(R.id.popular_tv_recView);
         mTopRatedRecyclerView = view.findViewById(R.id.top_rated_tv_recView);
@@ -118,23 +121,38 @@ public class SeriesFragment extends Fragment {
         mTopRatedSeries = new ArrayList<>();
 
         mAiringTodayAdapter = new SeriesCarouselAdapter(mAiringTodaySeries, getContext());
-        mOnTheAirAdapter = new SeriesBriefSmallAdapter(mOnTheAirSeries, getContext());
-        mPopularSeriesAdapter = new SeriesBriefSmallAdapter(mPopularSeries, getContext());
-        mTopRatedAdapter = new SeriesBriefSmallAdapter(mTopRatedSeries, getContext());
-
+        carouselLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+        mAiringTodayRecyclerView.setLayoutManager(carouselLayoutManager);
         mAiringTodayRecyclerView.setAdapter(mAiringTodayAdapter);
-        mAiringTodayRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        SnapHelper snapHelper = new PagerSnapHelper();
+        snapHelper.attachToRecyclerView(mAiringTodayRecyclerView);
+        mAiringTodayRecyclerView.smoothScrollBy(5,0);
 
-        mOnTheAirRecyclerView.setAdapter(mOnTheAirAdapter);
+        mOnTheAirAdapter = new SeriesBriefSmallAdapter(mOnTheAirSeries, getContext());
         mOnTheAirRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        mOnTheAirRecyclerView.setAdapter(mOnTheAirAdapter);
 
-        mPopularSeriesRecyclerView.setAdapter(mPopularSeriesAdapter);
+        mPopularSeriesAdapter = new SeriesBriefSmallAdapter(mPopularSeries, getContext());
         mPopularSeriesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        mPopularSeriesRecyclerView.setAdapter(mPopularSeriesAdapter);
 
-        mTopRatedRecyclerView.setAdapter(mTopRatedAdapter);
+        mTopRatedAdapter = new SeriesBriefSmallAdapter(mTopRatedSeries, getContext());
         mTopRatedRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        mTopRatedRecyclerView.setAdapter(mTopRatedAdapter);
 
-        mProgressBar.setVisibility(View.VISIBLE);
+        mAiringTodayRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+
+                if (newState == 1) {
+                    stopAutoScrollCarousel();
+                } else if (newState == 0) {
+                    position = carouselLayoutManager.findFirstCompletelyVisibleItemPosition();
+                    runAutoScrollingCarousel();
+                }
+            }
+        });
 
         mViewOnTheAir.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -167,6 +185,41 @@ public class SeriesFragment extends Fragment {
         loadOnTheAir();
         loadPopular();
         loadTopRated();
+    }
+
+    private void stopAutoScrollCarousel(){
+        if (timer != null && timerTask != null) {
+            timerTask.cancel();
+            timer.cancel();
+            timer = null;
+            timerTask = null;
+            position = carouselLayoutManager.findFirstCompletelyVisibleItemPosition();
+        }
+    }
+
+    private void runAutoScrollingCarousel(){
+        if (timer == null && timerTask == null) {
+            timer = new Timer();
+            timerTask = new TimerTask() {
+                @Override
+                public void run() {
+                    if (position == mAiringTodaySeries.size() - 1) {
+                        mAiringTodayRecyclerView.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                position = 0;
+                                mAiringTodayRecyclerView.smoothScrollToPosition(position);
+                                mAiringTodayRecyclerView.smoothScrollBy(5, 0);
+                            }
+                        });
+                    } else {
+                        position++;
+                        mAiringTodayRecyclerView.smoothScrollToPosition(position);
+                    }
+                }
+            };
+            timer.schedule(timerTask, 4000, 4000);
+        }
     }
 
     private void loadAiringToday(){
@@ -296,5 +349,17 @@ public class SeriesFragment extends Fragment {
             mTopRatedHeading.setVisibility(View.VISIBLE);
             mTopRatedRecyclerView.setVisibility(View.VISIBLE);
         }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        stopAutoScrollCarousel();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        runAutoScrollingCarousel();
     }
 }

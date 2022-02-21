@@ -19,6 +19,8 @@ import androidx.recyclerview.widget.SnapHelper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import cf.vandit.movie_app.R;
 import cf.vandit.movie_app.activities.ViewAllMoviesActivity;
@@ -41,6 +43,11 @@ public class MovieFragment extends Fragment {
 
     private TextView mViewPopular;
     private TextView mViewTopRated;
+
+    private Timer timer;
+    private TimerTask timerTask;
+    private int position;
+    private LinearLayoutManager carouselLayoutManager;
 
     private RecyclerView mNowShowingRecyclerView;
     private List<MovieBrief> mNowShowingMovies;
@@ -86,8 +93,6 @@ public class MovieFragment extends Fragment {
         mViewTopRated = view.findViewById(R.id.view_top_rated);
 
         mNowShowingRecyclerView = view.findViewById(R.id.carousel_recView);
-        SnapHelper snapHelper = new PagerSnapHelper();
-        snapHelper.attachToRecyclerView(mNowShowingRecyclerView);
 
         mPopularMoviesRecyclerView = view.findViewById(R.id.popular_recView);
         mTopRatedRecyclerView = view.findViewById(R.id.top_rated_recView);
@@ -104,17 +109,34 @@ public class MovieFragment extends Fragment {
         mTopRatedMoviesLoaded = false;
 
         mNowShowingAdapter = new MovieCarouselAdapter(mNowShowingMovies, getContext());
-        mNowShowingRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        carouselLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+        mNowShowingRecyclerView.setLayoutManager(carouselLayoutManager);
+        mNowShowingRecyclerView.setAdapter(mNowShowingAdapter);
+        SnapHelper snapHelper = new PagerSnapHelper();
+        snapHelper.attachToRecyclerView(mNowShowingRecyclerView);
+        mNowShowingRecyclerView.smoothScrollBy(5,0);
 
         mPopularMoviesAdapter = new MovieBriefSmallAdapter(mPopularMovies, getContext());
         mPopularMoviesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        mPopularMoviesRecyclerView.setAdapter(mPopularMoviesAdapter);
 
         mTopRatedAdapter = new MovieBriefSmallAdapter(mTopRatedMovies, getContext());
         mTopRatedRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-
-        mNowShowingRecyclerView.setAdapter(mNowShowingAdapter);
-        mPopularMoviesRecyclerView.setAdapter(mPopularMoviesAdapter);
         mTopRatedRecyclerView.setAdapter(mTopRatedAdapter);
+
+        mNowShowingRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+
+                if (newState == 1) {
+                    stopAutoScrollCarousel();
+                } else if (newState == 0) {
+                    position = carouselLayoutManager.findFirstCompletelyVisibleItemPosition();
+                    runAutoScrollingCarousel();
+                }
+            }
+        });
 
         mViewPopular.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -137,6 +159,41 @@ public class MovieFragment extends Fragment {
         loadNowShowingMovies();
         loadPopularMovies();
         loadTopRatedMovies();
+    }
+
+    private void stopAutoScrollCarousel(){
+        if (timer != null && timerTask != null) {
+            timerTask.cancel();
+            timer.cancel();
+            timer = null;
+            timerTask = null;
+            position = carouselLayoutManager.findFirstCompletelyVisibleItemPosition();
+        }
+    }
+
+    private void runAutoScrollingCarousel(){
+        if (timer == null && timerTask == null) {
+            timer = new Timer();
+            timerTask = new TimerTask() {
+                @Override
+                public void run() {
+                    if (position == mNowShowingMovies.size() - 1) {
+                        mNowShowingRecyclerView.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                position = 0;
+                                mNowShowingRecyclerView.smoothScrollToPosition(position);
+                                mNowShowingRecyclerView.smoothScrollBy(5, 0);
+                            }
+                        });
+                    } else {
+                        position++;
+                        mNowShowingRecyclerView.smoothScrollToPosition(position);
+                    }
+                }
+            };
+            timer.schedule(timerTask, 4000, 4000);
+        }
     }
 
     private void loadNowShowingMovies() {
@@ -236,5 +293,17 @@ public class MovieFragment extends Fragment {
             mTopRatedHeading.setVisibility(View.VISIBLE);
             mTopRatedRecyclerView.setVisibility(View.VISIBLE);
         }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        stopAutoScrollCarousel();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        runAutoScrollingCarousel();
     }
 }
