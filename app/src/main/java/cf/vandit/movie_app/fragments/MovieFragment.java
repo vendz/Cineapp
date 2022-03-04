@@ -2,6 +2,7 @@ package cf.vandit.movie_app.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -156,9 +157,7 @@ public class MovieFragment extends Fragment {
             }
         });
 
-        loadNowShowingMovies();
-        loadPopularMovies();
-        loadTopRatedMovies();
+        initViews();
     }
 
     private void stopAutoScrollCarousel(){
@@ -194,6 +193,12 @@ public class MovieFragment extends Fragment {
             };
             timer.schedule(timerTask, 4000, 4000);
         }
+    }
+
+    private void initViews(){
+        loadNowShowingMovies();
+        loadPopularMovies();
+        loadTopRatedMovies();
     }
 
     private void loadNowShowingMovies() {

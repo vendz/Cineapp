@@ -40,7 +40,7 @@ import cf.vandit.movie_app.adapters.EpisodesAdapter;
 import cf.vandit.movie_app.adapters.SeriesBriefSmallAdapter;
 import cf.vandit.movie_app.adapters.SeriesCastsAdapter;
 import cf.vandit.movie_app.adapters.TrailerAdapter;
-import cf.vandit.movie_app.database.Favourite;
+import cf.vandit.movie_app.database.DatabaseHelper;
 import cf.vandit.movie_app.database.series.FavSeries;
 import cf.vandit.movie_app.database.series.SeriesDatabase;
 import cf.vandit.movie_app.network.series.EpisodeBrief;
@@ -254,7 +254,7 @@ public class SeriesDetailsActivity extends AppCompatActivity {
     }
 
     private void setFavourite(final Integer SeriesId, final String posterPath, final String seriesTitle) {
-        if (Favourite.isFavSeries(SeriesDetailsActivity.this, SeriesId)) {
+        if (DatabaseHelper.isFavSeries(SeriesDetailsActivity.this, SeriesId)) {
             series_favourite_btn.setTag(Constants.TAG_FAV);
             series_favourite_btn.setImageResource(R.drawable.ic_favourite_filled);
             series_favourite_btn.setColorFilter(Color.argb(1, 236, 116, 85));

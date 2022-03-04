@@ -43,20 +43,21 @@
         android:layout_marginHorizontal="15dp"
         android:layout_marginTop="16dp"
         android:fontFamily="@font/roboto_medium"
-        android:text="Recent Searches"
+        android:text="Recent"
         android:textColor="@color/white"
         android:textSize="17dp"
-        android:visibility="gone"
+        android:visibility="invisible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/searchView" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/search_recView_recents"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_margin="10dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/search_recents_textView"
-        android:layout_margin="10dp"
-        android:visibility="gone"/>
+        app:layout_constraintTop_toBottomOf="@+id/search_recents_textView" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,11 +1,11 @@
 package cf.vandit.movie_app.utils;
 
 public class Constants {
-    public static final String API_KEY = "TMDB-API-KEY";
-    public static final String YOUTUBE_API_KEY = "YOUTUBE-API-KEY";
+    public static final String API_KEY = "e904cd25f93143f938021b6f300ca5f6";
+    public static final String YOUTUBE_API_KEY = "AIzaSyBCf2xQ1khvZ2Mrfy3vgGADsZa0SM2LmIU";
     public static final String BASE_URL = "https://api.themoviedb.org/3/";
-    public static final String MOVIE_STREAM_URL = "CANNOT-BE-DISCLOSED";
-    public static final String SERIES_STREAM_URL = "CANNOT-BE-DISCLOSED";
+    public static final String MOVIE_STREAM_URL = "https://gomo.to/movie/";
+    public static final String SERIES_STREAM_URL = "https://gomo.to/show/";
     public static final String IMAGE_LOADING_BASE_URL_1280 = "https://image.tmdb.org/t/p/w1280/";
     public static final String IMAGE_LOADING_BASE_URL_342 = "https://image.tmdb.org/t/p/w342/";
     public static final String IMAGE_LOADING_BASE_URL_780 = "https://image.tmdb.org/t/p/w780/";

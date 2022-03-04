@@ -43,6 +43,7 @@
         <entry key="app/src/main/res/layout/item_recents.xml" value="0.1311379559297466" />
         <entry key="app/src/main/res/layout/item_search_result.xml" value="0.2749094202898551" />
         <entry key="app/src/main/res/layout/item_video.xml" value="0.28229166666666666" />
+        <entry key="app/src/main/res/layout/recent_search_single_item.xml" value="0.28125" />
         <entry key="app/src/main/res/layout/small_single_item.xml" value="0.17617753623188406" />
         <entry key="app/src/main/res/menu/bottom_navigation.xml" value="0.28229166666666666" />
         <entry key="app/src/main/res/menu/top_app_bar.xml" value="0.28229166666666666" />

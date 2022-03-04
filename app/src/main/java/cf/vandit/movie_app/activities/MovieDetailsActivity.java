@@ -49,7 +49,7 @@ import cf.vandit.movie_app.network.videos.TrailersResponse;
 import cf.vandit.movie_app.request.ApiClient;
 import cf.vandit.movie_app.request.ApiInterface;
 import cf.vandit.movie_app.utils.Constants;
-import cf.vandit.movie_app.database.Favourite;
+import cf.vandit.movie_app.database.DatabaseHelper;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -234,7 +234,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
     }
 
     private void setFavourite(final Integer movieId, final String posterPath, final String movieTitle, final FavMovie mFavMovie) {
-        if (Favourite.isFavMovie(MovieDetailsActivity.this, movieId)) {
+        if (DatabaseHelper.isFavMovie(MovieDetailsActivity.this, movieId)) {
             movie_favourite_btn.setTag(Constants.TAG_FAV);
             movie_favourite_btn.setImageResource(R.drawable.ic_favourite_filled);
             movie_favourite_btn.setColorFilter(Color.argb(1, 236, 116, 85));
