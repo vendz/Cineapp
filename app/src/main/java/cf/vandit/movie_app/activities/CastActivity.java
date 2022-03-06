@@ -190,13 +190,21 @@ public class CastActivity extends AppCompatActivity {
 
                 if (response.body().getBiography() != null && !response.body().getBiography().trim().isEmpty()) {
                     cast_bio_heading.setVisibility(View.VISIBLE);
-                    cast_read_more.setVisibility(View.VISIBLE);
                     cast_bio.setText(response.body().getBiography());
-                    cast_read_more.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
+
+                    if(cast_bio.getLineCount() == 7){
+                        cast_read_more.setVisibility(View.VISIBLE);
+                    } else {
+                        cast_read_more.setVisibility(View.GONE);
+                    }
+
+                    cast_read_more.setOnClickListener(view -> {
+                        if(cast_read_more.getText() == "Read more"){
                             cast_bio.setMaxLines(Integer.MAX_VALUE);
-                            cast_read_more.setVisibility(View.GONE);
+                            cast_read_more.setText("Read less");
+                        } else {
+                            cast_bio.setMaxLines(7);
+                            cast_read_more.setText("Read more");
                         }
                     });
                 }
