@@ -134,7 +134,7 @@ public class ViewAllSeriesActivity extends AppCompatActivity {
                 });
                 break;
 
-            case Constants.POPULAR_MOVIES_TYPE:
+            case Constants.POPULAR_TV_SHOWS_TYPE:
                 mPopularSeriesCall = apiInterface.getPopularSeries(Constants.API_KEY, presentPage);
                 mPopularSeriesCall.enqueue(new Callback<PopularSeriesResponse>() {
                     @Override

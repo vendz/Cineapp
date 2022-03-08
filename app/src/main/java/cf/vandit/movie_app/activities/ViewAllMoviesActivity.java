@@ -14,12 +14,14 @@ import java.util.List;
 
 import cf.vandit.movie_app.R;
 import cf.vandit.movie_app.adapters.MovieBriefSmallAdapter;
+import cf.vandit.movie_app.network.movie.GenreMoviesResponse;
 import cf.vandit.movie_app.network.movie.MovieBrief;
 import cf.vandit.movie_app.network.movie.PopularMoviesResponse;
 import cf.vandit.movie_app.network.movie.TopRatedMoviesResponse;
 import cf.vandit.movie_app.request.ApiClient;
 import cf.vandit.movie_app.request.ApiInterface;
 import cf.vandit.movie_app.utils.Constants;
+import cf.vandit.movie_app.utils.NestedRecViewModel;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -40,6 +42,7 @@ public class ViewAllMoviesActivity extends AppCompatActivity {
 
     private Call<PopularMoviesResponse> mPopularMoviesCall;
     private Call<TopRatedMoviesResponse> mTopRatedMoviesCall;
+    Call<GenreMoviesResponse> mGenreMoviesResponseCall;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +64,63 @@ public class ViewAllMoviesActivity extends AppCompatActivity {
                 break;
             case Constants.TOP_RATED_MOVIES_TYPE:
                 setTitle("Top Rated Movies");
+                break;
+            case Constants.ACTION_MOVIES_TYPE:
+                setTitle("Action Movies");
+                break;
+            case Constants.ADVENTURE_MOVIES_TYPE:
+                setTitle("Adventure Movies");
+                break;
+            case Constants.ANIMATION_MOVIES_TYPE:
+                setTitle("Animation Movies");
+                break;
+            case Constants.COMEDY_MOVIES_TYPE:
+                setTitle("Comedy Movies");
+                break;
+            case Constants.CRIME_MOVIES_TYPE:
+                setTitle("Crime Movies");
+                break;
+            case Constants.DOCUMENTARY_MOVIES_TYPE:
+                setTitle("Documentary Movies");
+                break;
+            case Constants.DRAMA_MOVIES_TYPE:
+                setTitle("Drama Movies");
+                break;
+            case Constants.FAMILY_MOVIES_TYPE:
+                setTitle("Family Movies");
+                break;
+            case Constants.FANTASY_MOVIES_TYPE:
+                setTitle("Fantasy Movies");
+                break;
+            case Constants.HISTORY_MOVIES_TYPE:
+                setTitle("History Movies");
+                break;
+            case Constants.HORROR_MOVIES_TYPE:
+                setTitle("Horror Movies");
+                break;
+            case Constants.MUSIC_MOVIES_TYPE:
+                setTitle("Music Movies");
+                break;
+            case Constants.MYSTERY_MOVIES_TYPE:
+                setTitle("Mystery Movies");
+                break;
+            case Constants.ROMANCE_MOVIES_TYPE:
+                setTitle("Romance Movies");
+                break;
+            case Constants.SCIFI_MOVIES_TYPE:
+                setTitle("Sci-Fi Movies");
+                break;
+            case Constants.TV_MOVIES_TYPE:
+                setTitle("TV Movies");
+                break;
+            case Constants.THRILLER_MOVIES_TYPE:
+                setTitle("Thriller Movies");
+                break;
+            case Constants.WAR_MOVIES_TYPE:
+                setTitle("War Movies");
+                break;
+            case Constants.WESTERN_MOVIES_TYPE:
+                setTitle("Western Movies");
                 break;
         }
 
@@ -163,6 +223,36 @@ public class ViewAllMoviesActivity extends AppCompatActivity {
                     }
                 });
                 break;
+
+            default:
+                mGenreMoviesResponseCall = apiService.getMoviesByGenre(Constants.API_KEY, movieType, presentPage);
+                mGenreMoviesResponseCall.enqueue(new Callback<GenreMoviesResponse>() {
+                    @Override
+                    public void onResponse(Call<GenreMoviesResponse> call, Response<GenreMoviesResponse> response) {
+                        if (!response.isSuccessful()){
+                            mGenreMoviesResponseCall = call.clone();
+                            mGenreMoviesResponseCall.enqueue(this);
+                            return;
+                        }
+
+                        if (response.body() == null) return;
+                        if (response.body().getResults() == null) return;
+
+                        for (MovieBrief movieBrief : response.body().getResults()){
+                            if(movieBrief != null && movieBrief.getPosterPath() != null){
+                                mMovies.add(movieBrief);
+                            }
+                        }
+                        mMoviesAdapter.notifyDataSetChanged();
+                        if (response.body().getPage().equals(response.body().getTotalPages()))
+                            pagesOver = true;
+                        else
+                            presentPage++;
+                    }
+
+                    @Override
+                    public void onFailure(Call<GenreMoviesResponse> call, Throwable t) {}
+                });
         }
     }
 
